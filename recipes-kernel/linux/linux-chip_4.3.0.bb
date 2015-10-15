@@ -18,7 +18,9 @@ RDEPENDS_kernel-base += "kernel-devicetree"
 
 KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 
-SRC_URI = "git://github.com/NextThingCo/CHIP-linux.git;protocol=git;branch=nextthing/4.3/chip"
+SRC_URI = " \
+    git://github.com/nextthingco/chip-linux.git;protocol=git;branch=nextthing/4.3/chip \
+    file://defconfig"
 
 SRCREV = "713c5d272aa0db19ba6440597bcb32b68cb2ab2f"
 
