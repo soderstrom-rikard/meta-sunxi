@@ -32,4 +32,49 @@ PV = "v2015.10${SRCPV}"
 
 PE = "1"
 
-SPL_BINARY="u-boot-sunxi-with-spl.bin"
+# sunxi-spl.bin
+SUNXI_SPL_IMAGE   = "sunxi-spl-with-ecc"
+SUNXI_SPL_BINARY  = "${SUNXI_SPL_IMAGE}.bin"
+SUNXI_SPL_SYMLINK = "${SUNXI_SPL_BINARY}-${MACHINE}"
+
+# u-boot-dtb.bin
+UBOOT_DTB_IMAGE   = "u-boot-dtb"
+UBOOT_DTB_BINARY  = "${UBOOT_DTB_IMAGE}.bin"
+UBOOT_DTB_SYMLINK = "${SUNXI_SPL_BINARY}-${MACHINE}"
+
+# uboot-env.bin
+UBOOT_ENV_SUFFIX  = "bin"
+UBOOT_ENV         = "uboot-env"
+
+do_compile_append() {
+    ${S}/tools/mkenvimage -s "0x400000" -o ${WORKDIR}/${UBOOT_ENV_BINARY} ${WORKDIR}/uboot-env-chip
+}
+
+do_install_append() {
+    # Install sunxi-spl and u-boot-dtb
+    install ${S}/spl/${SUNXI_SPL_BINARY} ${D}/boot/${SUNXI_SPL_IMAGE}-${type}-${PV}-${PR}
+    ln -sf ${SUNXI_SPL_IMAGE}-${type}-${PV}-${PR} ${D}/boot/${SUNXI_SPL_BINARY}-${type}
+    ln -sf ${SUNXI_SPL_IMAGE}-${type}-${PV}-${PR} ${D}/boot/${SUNXI_SPL_BINARY}
+
+    install ${S}/${UBOOT_DTB_BINARY} ${D}/boot/${UBOOT_DTB_IMAGE}-${type}-${PV}-${PR}
+    ln -sf ${UBOOT_DTB_IMAGE}-${type}-${PV}-${PR} ${D}/boot/${UBOOT_DTB_BINARY}-${type}
+    ln -sf ${UBOOT_DTB_IMAGE}-${type}-${PV}-${PR} ${D}/boot/${UBOOT_DTB_BINARY}
+}
+
+do_deploy_append() {
+    # Deploy sunxi-spl and u-boot-dtb
+    install ${S}/spl/${SUNXI_SPL_BINARY} ${DEPLOYDIR}/${SUNXI_SPL_IMAGE}-${type}-${PV}-${PR}
+    rm -f ${DEPLOYDIR}/${SUNXI_SPL_BINARY} ${DEPLOYDIR}/${SUNXI_SPL_SYMLINK}-${type}
+    ln -sf ${SUNXI_SPL_IMAGE}-${type}-${PV}-${PR} ${DEPLOYDIR}/${SUNXI_SPL_BINARY}-${type}
+    ln -sf ${SUNXI_SPL_IMAGE}-${type}-${PV}-${PR} ${DEPLOYDIR}/${SUNXI_SPL_BINARY}
+    ln -sf ${SUNXI_SPL_IMAGE}-${type}-${PV}-${PR} ${DEPLOYDIR}/${SUNXI_SPL_SYMLINK}-${type}
+    ln -sf ${SUNXI_SPL_IMAGE}-${type}-${PV}-${PR} ${DEPLOYDIR}/${SUNXI_SPL_SYMLINK}
+
+
+    install ${S}/${UBOOT_DTB_BINARY} ${DEPLOYDIR}/${UBOOT_DTB_IMAGE}-${type}-${PV}-${PR}
+    rm -f ${DEPLOYDIR}/${UBOOT_DTB_BINARY} ${DEPLOYDIR}/${UBOOT_DTB_SYMLINK}-${type}
+    ln -sf ${UBOOT_DTB_IMAGE}-${type}-${PV}-${PR} ${DEPLOYDIR}/${UBOOT_DTB_BINARY}-${type}
+    ln -sf ${UBOOT_DTB_IMAGE}-${type}-${PV}-${PR} ${DEPLOYDIR}/${UBOOT_DTB_BINARY}
+    ln -sf ${UBOOT_DTB_IMAGE}-${type}-${PV}-${PR} ${DEPLOYDIR}/${UBOOT_DTB_SYMLINK}-${type}
+    ln -sf ${UBOOT_DTB_IMAGE}-${type}-${PV}-${PR} ${DEPLOYDIR}/${UBOOT_DTB_SYMLINK}
+}
