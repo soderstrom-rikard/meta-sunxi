@@ -20,7 +20,7 @@ KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
 
 SRC_URI = " \
     git://github.com/nextthingco/chip-linux.git;protocol=git;branch=nextthing/4.3/chip \
-    file://defconfig"
+    file://defconfig;md5=45984258b2977b6dd7aed2fcda538f4a"
 
 SRCREV = "713c5d272aa0db19ba6440597bcb32b68cb2ab2f"
 
