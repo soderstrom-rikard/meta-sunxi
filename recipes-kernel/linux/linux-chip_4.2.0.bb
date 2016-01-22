@@ -28,3 +28,9 @@ SRC_URI = " \
 SRCREV = "fd2ad2582c7fb4a5fedff5ac19ca37d138df3963"
 
 S = "${WORKDIR}/git"
+
+do_install_append() {
+    #workaround for bug in fido, ocurrs when building out-of-tree modules
+    #ref: https://lists.yoctoproject.org/pipermail/yocto/2015-May/024738.html
+    cp -f ${KBUILD_OUTPUT}/Module.symvers ${STAGING_KERNEL_BUILDDIR}
+}
